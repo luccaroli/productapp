@@ -2,8 +2,16 @@ import React, {createContext, useState} from 'react';
 import {ThemeProvider as ThemeProviderDefault} from 'styled-components/native';
 import dark from './dark';
 import light from './light';
+import {StatusBar} from 'react-native';
 
-export const ThemeContext = createContext({});
+interface ThemeContextProps {
+  theme: ThemeType;
+  onToggleTheme: () => void;
+}
+
+export const ThemeContext = createContext<ThemeContextProps>(
+  {} as ThemeContextProps,
+);
 
 enum ThemeType {
   LIGHT = 'light',
@@ -27,6 +35,9 @@ function ThemeProvider({children}: {children: React.ReactNode}) {
   return (
     <ThemeContext.Provider value={{theme: theme, onToggleTheme}}>
       <ThemeProviderDefault theme={themes[theme]}>
+        <StatusBar
+          barStyle={theme === ThemeType.DARK ? 'light-content' : 'dark-content'}
+        />
         {children}
       </ThemeProviderDefault>
     </ThemeContext.Provider>
