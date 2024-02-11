@@ -7,6 +7,7 @@ const mockAsyncStorage = AsyncStorage as jest.Mocked<typeof AsyncStorage>;
 describe('Storage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.resetAllMocks();
     jest.spyOn(console, 'error').mockImplementation(() => {});
   });
 
@@ -68,5 +69,94 @@ describe('Storage', () => {
       mockError,
     );
     expect(result).toBeNull();
+  });
+
+  it('should remove data from AsyncStorage', async () => {
+    const key = 'testKey';
+
+    await Storage.remove(key);
+
+    expect(mockAsyncStorage.removeItem).toHaveBeenCalledWith(key);
+  });
+
+  it('should handle errors when removing data from AsyncStorage', async () => {
+    const key = 'testKey';
+    const mockError = new Error('AsyncStorage remove error');
+
+    mockAsyncStorage.removeItem.mockRejectedValueOnce(mockError);
+
+    await Storage.remove(key);
+
+    expect(mockAsyncStorage.removeItem).toHaveBeenCalledWith(key);
+    expect(console.error).toHaveBeenCalledWith(
+      'Error removing data from AsyncStorage:',
+      mockError,
+    );
+  });
+
+  it('should update an item in AsyncStorage', async () => {
+    const key = 'testKey';
+    const data = {value: 'testValue'};
+
+    await Storage.updateItem(key, data);
+
+    expect(mockAsyncStorage.mergeItem).toHaveBeenCalledWith(
+      key,
+      JSON.stringify(data),
+    );
+  });
+
+  it('should handle errors when updating an item in AsyncStorage', async () => {
+    const key = 'testKey';
+    const data = {value: 'testValue'};
+    const mockError = new Error('AsyncStorage updateItem error');
+
+    mockAsyncStorage.mergeItem.mockRejectedValueOnce(mockError);
+
+    await Storage.updateItem(key, data);
+
+    expect(mockAsyncStorage.mergeItem).toHaveBeenCalledWith(
+      key,
+      JSON.stringify(data),
+    );
+    expect(console.error).toHaveBeenCalledWith(
+      'Error updating data in AsyncStorage:',
+      mockError,
+    );
+  });
+
+  it('should get all data from AsyncStorage with a given key prefix', async () => {
+    const keyPrefix = 'testKey';
+    const mockKeys = ['testKey1', 'testKey2'];
+    const mockData = [{value: 'testValue1'}, {value: 'testValue2'}];
+    const mockJsonData = [
+      [mockKeys[0], JSON.stringify(mockData[0])],
+      [mockKeys[1], JSON.stringify(mockData[1])],
+    ] as never;
+
+    mockAsyncStorage.getAllKeys.mockResolvedValue(mockKeys);
+    mockAsyncStorage.multiGet.mockResolvedValue(mockJsonData);
+
+    const result = await Storage.getAll(keyPrefix);
+
+    expect(mockAsyncStorage.getAllKeys).toHaveBeenCalled();
+    expect(mockAsyncStorage.multiGet).toHaveBeenCalledWith(mockKeys);
+    expect(result).toEqual(mockData);
+  });
+
+  it('should handle errors when getting all data from AsyncStorage', async () => {
+    const keyPrefix = 'testKey';
+    const mockError = new Error('AsyncStorage getAllKeys error');
+
+    mockAsyncStorage.getAllKeys.mockRejectedValueOnce(mockError);
+
+    const result = await Storage.getAll(keyPrefix);
+
+    expect(mockAsyncStorage.getAllKeys).toHaveBeenCalled();
+    expect(console.error).toHaveBeenCalledWith(
+      'Error loading keys from AsyncStorage:',
+      mockError,
+    );
+    expect(result).toEqual([]);
   });
 });
