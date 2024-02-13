@@ -13,7 +13,7 @@ export const ThemeContext = createContext<ThemeContextProps>(
   {} as ThemeContextProps,
 );
 
-enum ThemeType {
+export enum ThemeType {
   LIGHT = 'light',
   DARK = 'dark',
 }
