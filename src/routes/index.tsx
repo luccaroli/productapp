@@ -8,9 +8,7 @@ const AuthStack = createNativeStackNavigator();
 
 function Routes() {
   return (
-    <AuthStack.Navigator
-      screenOptions={{headerShown: false}}
-      initialRouteName="Home">
+    <AuthStack.Navigator screenOptions={{headerShown: false}}>
       <AuthStack.Screen name="Auth" component={Auth} />
       <AuthStack.Screen name="Home" component={Home} />
       <AuthStack.Screen name="Menu" component={Menu} />

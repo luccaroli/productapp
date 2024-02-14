@@ -1,5 +1,14 @@
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
+# Ambiente para rodar o app
+Node >= 18
+Xcode >= 14.2
+JDK >= 17
+
+- Na primeira entrada é feito o registro do usuário, nas proximas vezes é preciso entrar com o cpf e senha cadastrados anteriormente
+- É preciso fornecer um cpf válido
+- A senha precisa ter no minimo 8 caracteres
+
 # Getting Started
 
 >**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
